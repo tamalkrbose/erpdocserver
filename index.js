@@ -77,9 +77,6 @@ async function test1(req, res){
 async function getExcelData(req, res){
     var batchNumber = req.body.batchNumber;
 
-
-    console.log("getExcelData() postId: ", dataArray);
-
     var query = `select *
                 from erpexcel.t_excel e
                 where e.batch_number = '${(batchNumber)}';`
