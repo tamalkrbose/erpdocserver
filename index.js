@@ -15,7 +15,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.all('/test1', test1);
 
 
-//app.all('/dashboard/getExcelData', getExcelData);
+app.all('/print/getExcelData', getExcelData);
 app.all('/dashboard/setExcelData', setExcelData);
 
 app.set('port', process.env.PORT || 9603);
@@ -73,7 +73,7 @@ async function test1(req, res){
 }
 
 
-/*
+
 async function getExcelData(req, res){
     var batchNumber = req.body.batchNumber;
 
@@ -86,7 +86,7 @@ async function getExcelData(req, res){
     console.log('getPostDetail result: ', result);
     res.send(result);
     
-}*/
+}
 
 async function setExcelData(req, res){
     // console.log(req.body);
