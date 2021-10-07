@@ -76,34 +76,57 @@ async function test1(req, res){
 
 async function getExcelData(req, res){
     var batchNumber = req.body.batchNumber;
-
+    // console.log("getExcelData() postId: ", batchNumber);
     var query = `select *
                 from erpexcel.t_excel e
                 where e.batch_number = '${(batchNumber)}';`
-	
 	//console.log(query);
 	var result = await runDB2(query);
-    console.log('getPostDetail result: ', result);
+    // console.log('getPostDetail result: ', result);
     res.send(result);
-    
 }
 
 async function setExcelData(req, res){
     // console.log(req.body);
     var dataArray = req.body.dataArray;
     var batchNumber = req.body.batchNumber;
-    console.log("setExcelData() postId: ", dataArray);
+    // console.log("setExcelData() postId: ", dataArray);
 
     var query = '';
 	for (var i = 1; i < dataArray.length; i++) {
         query += `INSERT INTO erpexcel.t_excel (po_id, customer_id, ship_name, ship_mobile_number, ship_city, ship_pincode, order_date, weight, status, batch_number)
         VALUES ('${dataArray[i][0]}', '${dataArray[i][1]}', '${dataArray[i][2]}', '${dataArray[i][3]}', '${dataArray[i][4]}', '${dataArray[i][5]}', '${dataArray[i][6]}', '${dataArray[i][7]}', '${dataArray[i][7]}', '${batchNumber}');`
     }
-	console.log(query);
+	// console.log(query);
 	var result = await runDB2(query);
-    console.log('getPostDetail result: ', result);
+    // console.log('getPostDetail result: ', result);
     res.send(result);
     
 }
 
+async function getCSV(req, res){
+    var batchNumber = req.query.batchNumber;
+    var query = `select *
+                from erpexcel.t_excel e
+                where e.batch_number = '${(batchNumber)}';`
+	var result = await runDB2(query);
+    // console.log('getPostDetail result: ', result);
+    var fieldsIn = [
+        { label: 'po_id', value: 'po_id' },
+        { label: ' customer id', value: 'customer_id' },
+        { label: 'Ship Name', value: 'ship_name' },
+        { label: 'Ship Mobile Number', value: 'ship_mobile_number' },
+        { label: 'Ship City', value: 'ship_city' },
+        { label: 'Ship Pincode', value: 'ship_pincode' },
+        { label: 'Order Date', value: 'order_date' },
+        { label: 'Weight', value: 'weight' },
+        { label: 'Status', value: 'status' }
+    ];
+    // datas = data.map(function(tData){ return tData.dataValues });
+    var json2csv = new Parser({ fields: fieldsIn });
+    const csv = json2csv.parse(result);
+
+    res.attachment(`${batchNumber}.csv`);
+    res.status(200).send(csv);
+}
 
